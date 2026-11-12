@@ -2,5 +2,7 @@
   <Folder Name="/Éléments de solution/">
     <File Path=".gitignore" />
   </Folder>
+  <Project Path="DataAccess/DataAccess.csproj" />
+  <Project Path="DAO/DAO.csproj" />
   <Project Path="Gestion_Universite/Gestion_Universite.csproj" />
 </Solution>
