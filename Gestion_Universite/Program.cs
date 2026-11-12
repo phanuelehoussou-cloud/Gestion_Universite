@@ -1,17 +1,23 @@
-namespace Gestion_Universite
+using DataAccess;
+using DAO;
+
+namespace Gestion_Universite;
+
+internal static class Program
 {
-    internal static class Program
+    [STAThread]
+    static void Main()
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
-        }
+        ApplicationConfiguration.Initialize();
+
+        // 1. Initialisation de la base de données & Injection des données initiales (Seeds)
+        DataSeeder.Initialize(JsonDataStore.Instance);
+
+        // 2. Génération automatique du script SQL de création de tables pour l'utilisateur
+        var scriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "script_creation_bdd.sql");
+        DbHelper.GenerateScriptFile(scriptPath);
+
+        // 3. Démarrage sur le Menu Principal (Dashboard & Formulaires)
+        Application.Run(new FormMenuPrincipal());
     }
 }
