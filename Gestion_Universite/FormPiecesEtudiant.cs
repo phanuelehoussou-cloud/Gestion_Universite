@@ -62,17 +62,23 @@ public partial class FormPiecesEtudiant : Form
 
         _dgvPieces.CellContentClick += DgvPieces_CellContentClick;
 
-        card.Controls.Add(_dgvPieces);
-        card.Controls.Add(topPanel);
-
-        var bottomPanel = new Panel { Dock = DockStyle.Bottom, Height = 45 };
+        var bottomPanel = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Bottom,
+            Height = 45,
+            FlowDirection = FlowDirection.RightToLeft,
+            Padding = new Padding(4)
+        };
         var btnClose = UITheme.CreateSecondaryButton("Fermer");
-        btnClose.Location = new Point(card.Width - 110, 5);
         btnClose.Click += (s, e) => Close();
         bottomPanel.Controls.Add(btnClose);
+
+        card.Controls.Add(_dgvPieces);
+        card.Controls.Add(topPanel);
         card.Controls.Add(bottomPanel);
 
         Controls.Add(card);
+        Controls.Add(titleBar);
     }
 
     private void LoadPieces()

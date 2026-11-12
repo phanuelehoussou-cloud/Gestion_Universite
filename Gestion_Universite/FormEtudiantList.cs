@@ -22,24 +22,26 @@ public partial class FormEtudiantList : Form
         BackColor = UITheme.AppBg;
         FormBorderStyle = FormBorderStyle.None;
 
+        AutoScroll = true;
+
         var titleBar = UITheme.CreateTitleBar(this, "6. Étudiants - Liste & Dossiers", "🧑‍🎓");
-        Controls.Add(titleBar);
 
         var contentPanel = new Panel
         {
             Dock = DockStyle.Fill,
-            Padding = new Padding(16),
-            BackColor = Color.Transparent
+            Padding = new Padding(12),
+            BackColor = Color.Transparent,
+            AutoScroll = true
         };
 
         var card = UITheme.CreateCard("Répertoire des étudiants", "📋");
         card.Dock = DockStyle.Fill;
 
         // Top actions bar with Search and Add
-        var topBar = new Panel { Dock = DockStyle.Top, Height = 50, Padding = new Padding(6) };
+        var topBar = new Panel { Dock = DockStyle.Top, Height = 48, Padding = new Padding(4) };
 
         var btnAdd = UITheme.CreatePrimaryButton("Nouveau dossier", "➕");
-        btnAdd.Location = new Point(6, 6);
+        btnAdd.Dock = DockStyle.Left;
         btnAdd.Click += (s, e) =>
         {
             var dlg = new FormEtudiantDetail();
@@ -47,25 +49,32 @@ public partial class FormEtudiantList : Form
             dlg.ShowDialog();
         };
 
-        var pnlSearch = new Panel { Size = new Size(340, 36), Location = new Point(card.Width - 370, 6), Anchor = AnchorStyles.Top | AnchorStyles.Right };
+        var pnlSearch = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Right,
+            Width = 350,
+            Height = 42,
+            FlowDirection = FlowDirection.LeftToRight
+        };
+
         _txtSearch = new TextBox
         {
             Text = "",
             Font = UITheme.FontRegular(10),
-            Size = new Size(240, 32),
-            Location = new Point(0, 4)
+            Width = 230,
+            Margin = new Padding(0, 4, 4, 0)
         };
         _txtSearch.PlaceholderText = "Rechercher par nom ou matricule...";
         _txtSearch.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) LoadData(); };
 
         var btnSearch = UITheme.CreatePrimaryButton("🔍");
-        btnSearch.Location = new Point(245, 1);
-        btnSearch.Size = new Size(45, 34);
+        btnSearch.Size = new Size(42, 32);
+        btnSearch.Margin = new Padding(0, 2, 4, 0);
         btnSearch.Click += (s, e) => LoadData();
 
         var btnReset = UITheme.CreateSecondaryButton("✕");
-        btnReset.Location = new Point(295, 1);
-        btnReset.Size = new Size(40, 34);
+        btnReset.Size = new Size(38, 32);
+        btnReset.Margin = new Padding(0, 2, 0, 0);
         btnReset.Click += (s, e) => { _txtSearch.Text = ""; LoadData(); };
 
         pnlSearch.Controls.Add(_txtSearch);
@@ -80,15 +89,15 @@ public partial class FormEtudiantList : Form
         UITheme.StyleDataGridView(_dgvEtudiants);
 
         _dgvEtudiants.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColId", HeaderText = "ID", Visible = false });
-        _dgvEtudiants.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColMatricule", HeaderText = "Matricule", FillWeight = 110 });
-        _dgvEtudiants.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColNom", HeaderText = "Nom", FillWeight = 110 });
-        _dgvEtudiants.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColPrenom", HeaderText = "Prénom", FillWeight = 120 });
-        _dgvEtudiants.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColClasse", HeaderText = "Classe", FillWeight = 90 });
-        _dgvEtudiants.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColStatut", HeaderText = "Statut", FillWeight = 80 });
+        _dgvEtudiants.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColMatricule", HeaderText = "Matricule", FillWeight = 110, MinimumWidth = 95 });
+        _dgvEtudiants.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColNom", HeaderText = "Nom", FillWeight = 110, MinimumWidth = 90 });
+        _dgvEtudiants.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColPrenom", HeaderText = "Prénom", FillWeight = 120, MinimumWidth = 100 });
+        _dgvEtudiants.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColClasse", HeaderText = "Classe", FillWeight = 90, MinimumWidth = 85 });
+        _dgvEtudiants.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColStatut", HeaderText = "Statut", FillWeight = 80, MinimumWidth = 80 });
 
-        var colView = new DataGridViewButtonColumn { Name = "ColView", HeaderText = "Dossier", Text = "👁", UseColumnTextForButtonValue = true, FillWeight = 40 };
-        var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Éditer", Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 40 };
-        var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "Suppr", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 40 };
+        var colView = new DataGridViewButtonColumn { Name = "ColView", HeaderText = "Dossier", Text = "👁", UseColumnTextForButtonValue = true, FillWeight = 40, MinimumWidth = 45 };
+        var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Éditer", Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 40, MinimumWidth = 45 };
+        var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "Suppr", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 40, MinimumWidth = 45 };
         _dgvEtudiants.Columns.AddRange(colView, colEdit, colDelete);
         _dgvEtudiants.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
@@ -99,6 +108,7 @@ public partial class FormEtudiantList : Form
 
         contentPanel.Controls.Add(card);
         Controls.Add(contentPanel);
+        Controls.Add(titleBar);
     }
 
     private void LoadData()

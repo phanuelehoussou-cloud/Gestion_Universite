@@ -29,41 +29,43 @@ public partial class FormAnneeSemestre : Form
         BackColor = UITheme.AppBg;
         FormBorderStyle = FormBorderStyle.None;
 
+        AutoScroll = true;
+
         var titleBar = UITheme.CreateTitleBar(this, "2. Années académiques et semestres", "📅");
-        Controls.Add(titleBar);
 
         var mainPanel = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
             ColumnCount = 2,
             RowCount = 1,
-            Padding = new Padding(16),
-            BackColor = Color.Transparent
+            Padding = new Padding(12),
+            BackColor = Color.Transparent,
+            AutoScroll = true
         };
         mainPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 42F));
         mainPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 58F));
 
         // LEFT COLUMN: Nouvelle année académique & Ajouter un semestre
-        var leftPanel = new FlowLayoutPanel
+        var leftPanel = new Panel
         {
             Dock = DockStyle.Fill,
-            FlowDirection = FlowDirection.TopDown,
-            WrapContents = false,
             AutoScroll = true
         };
 
         // --- Card: Nouvelle année académique ---
         var cardAnnee = UITheme.CreateCard("Nouvelle année académique", "📅");
-        cardAnnee.Size = new Size(390, 260);
+        cardAnnee.Dock = DockStyle.Top;
+        cardAnnee.Height = 255;
+        cardAnnee.Margin = new Padding(0, 0, 0, 10);
 
         var pnlFormAnnee = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
             ColumnCount = 2,
             RowCount = 4,
-            Padding = new Padding(8)
+            Padding = new Padding(6)
         };
-        pnlFormAnnee.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100));
+        pnlFormAnnee.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 95));
         pnlFormAnnee.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
 
         pnlFormAnnee.Controls.Add(new Label { Text = "Année :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
@@ -88,20 +90,20 @@ public partial class FormAnneeSemestre : Form
         pnlFormAnnee.Controls.Add(pnlBtnAnnee, 1, 3);
 
         cardAnnee.Controls.Add(pnlFormAnnee);
-        leftPanel.Controls.Add(cardAnnee);
 
         // --- Card: Ajouter un semestre ---
         var cardSemestre = UITheme.CreateCard("Ajouter un semestre", "📆");
-        cardSemestre.Size = new Size(390, 230);
+        cardSemestre.Dock = DockStyle.Top;
+        cardSemestre.Height = 225;
 
         var pnlFormSem = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
             ColumnCount = 2,
             RowCount = 4,
-            Padding = new Padding(8)
+            Padding = new Padding(6)
         };
-        pnlFormSem.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100));
+        pnlFormSem.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 95));
         pnlFormSem.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
 
         pnlFormSem.Controls.Add(new Label { Text = "Année :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
@@ -123,7 +125,9 @@ public partial class FormAnneeSemestre : Form
         pnlFormSem.Controls.Add(btnAddSem, 1, 3);
 
         cardSemestre.Controls.Add(pnlFormSem);
+
         leftPanel.Controls.Add(cardSemestre);
+        leftPanel.Controls.Add(cardAnnee);
 
         mainPanel.Controls.Add(leftPanel, 0, 0);
 
@@ -138,14 +142,14 @@ public partial class FormAnneeSemestre : Form
         UITheme.StyleDataGridView(_dgvAnnees);
 
         _dgvAnnees.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColId", HeaderText = "ID", Visible = false });
-        _dgvAnnees.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColAnnee", HeaderText = "Année", FillWeight = 110 });
-        _dgvAnnees.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColDebut", HeaderText = "Début", FillWeight = 90 });
-        _dgvAnnees.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColFin", HeaderText = "Fin", FillWeight = 90 });
-        _dgvAnnees.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColStatut", HeaderText = "Statut", FillWeight = 90 });
+        _dgvAnnees.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColAnnee", HeaderText = "Année", FillWeight = 110, MinimumWidth = 90 });
+        _dgvAnnees.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColDebut", HeaderText = "Début", FillWeight = 90, MinimumWidth = 80 });
+        _dgvAnnees.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColFin", HeaderText = "Fin", FillWeight = 90, MinimumWidth = 80 });
+        _dgvAnnees.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColStatut", HeaderText = "Statut", FillWeight = 90, MinimumWidth = 80 });
 
-        var colView = new DataGridViewButtonColumn { Name = "ColView", HeaderText = "Voir", Text = "👁", UseColumnTextForButtonValue = true, FillWeight = 45 };
-        var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Éditer", Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 45 };
-        var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "Suppr", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 45 };
+        var colView = new DataGridViewButtonColumn { Name = "ColView", HeaderText = "Voir", Text = "👁", UseColumnTextForButtonValue = true, FillWeight = 45, MinimumWidth = 45 };
+        var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Éditer", Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 45, MinimumWidth = 45 };
+        var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "Suppr", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 45, MinimumWidth = 45 };
         _dgvAnnees.Columns.AddRange(colView, colEdit, colDelete);
         _dgvAnnees.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
@@ -155,6 +159,7 @@ public partial class FormAnneeSemestre : Form
         mainPanel.Controls.Add(cardListe, 1, 0);
 
         Controls.Add(mainPanel);
+        Controls.Add(titleBar);
     }
 
     private void LoadData()

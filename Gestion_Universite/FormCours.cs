@@ -23,12 +23,13 @@ public partial class FormCours : Form
     {
         Text = "Cours";
         Size = new Size(1000, 560);
+        MinimumSize = new Size(800, 480);
+        AutoScroll = false;
         StartPosition = FormStartPosition.CenterScreen;
         BackColor = UITheme.AppBg;
         FormBorderStyle = FormBorderStyle.None;
 
         var titleBar = UITheme.CreateTitleBar(this, "9. Cours & Matières", "📚");
-        Controls.Add(titleBar);
 
         var mainPanel = new TableLayoutPanel
         {
@@ -54,6 +55,9 @@ public partial class FormCours : Form
         };
         pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 110));
         pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        for (int i = 0; i < 4; i++)
+            pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
 
         pnlForm.Controls.Add(new Label { Text = "Code :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
         _txtCode = new TextBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
@@ -91,9 +95,9 @@ public partial class FormCours : Form
         UITheme.StyleDataGridView(_dgvCours);
 
         _dgvCours.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColId", HeaderText = "ID", Visible = false });
-        _dgvCours.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColCode", HeaderText = "Code", FillWeight = 90 });
-        _dgvCours.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColIntitule", HeaderText = "Intitulé", FillWeight = 160 });
-        _dgvCours.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColVH", HeaderText = "VH", FillWeight = 60 });
+        _dgvCours.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColCode", HeaderText = "Code", FillWeight = 90, MinimumWidth = 70 });
+        _dgvCours.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColIntitule", HeaderText = "Intitulé", FillWeight = 160, MinimumWidth = 100 });
+        _dgvCours.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColVH", HeaderText = "VH", FillWeight = 60, MinimumWidth = 50 });
 
         var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Action", Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 35 };
         var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 35 };
@@ -106,6 +110,7 @@ public partial class FormCours : Form
         mainPanel.Controls.Add(cardList, 1, 0);
 
         Controls.Add(mainPanel);
+        Controls.Add(titleBar);
     }
 
     private void LoadData()

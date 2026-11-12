@@ -25,16 +25,18 @@ public partial class FormNiveau : Form
         BackColor = UITheme.AppBg;
         FormBorderStyle = FormBorderStyle.None;
 
+        AutoScroll = true;
+
         var titleBar = UITheme.CreateTitleBar(this, "4. Niveaux", "📊");
-        Controls.Add(titleBar);
 
         var mainPanel = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
             ColumnCount = 2,
             RowCount = 1,
-            Padding = new Padding(16),
-            BackColor = Color.Transparent
+            Padding = new Padding(12),
+            BackColor = Color.Transparent,
+            AutoScroll = true
         };
         mainPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45F));
         mainPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 55F));
@@ -48,10 +50,14 @@ public partial class FormNiveau : Form
             Dock = DockStyle.Fill,
             ColumnCount = 2,
             RowCount = 4,
-            Padding = new Padding(8)
+            Padding = new Padding(6)
         };
         pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 90));
         pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 48));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
         pnlForm.Controls.Add(new Label { Text = "Niveau :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
         _cboNiveau = new ComboBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
@@ -85,11 +91,11 @@ public partial class FormNiveau : Form
         UITheme.StyleDataGridView(_dgvNiveaux);
 
         _dgvNiveaux.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColId", HeaderText = "ID", Visible = false });
-        _dgvNiveaux.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColNiveau", HeaderText = "Niveau", FillWeight = 120 });
-        _dgvNiveaux.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColCycle", HeaderText = "Cycle", FillWeight = 140 });
+        _dgvNiveaux.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColNiveau", HeaderText = "Niveau", FillWeight = 120, MinimumWidth = 100 });
+        _dgvNiveaux.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColCycle", HeaderText = "Cycle", FillWeight = 140, MinimumWidth = 110 });
 
-        var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Action", Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 40 };
-        var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 40 };
+        var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Action", Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 40, MinimumWidth = 45 };
+        var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 40, MinimumWidth = 45 };
         _dgvNiveaux.Columns.AddRange(colEdit, colDelete);
         _dgvNiveaux.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
@@ -99,6 +105,7 @@ public partial class FormNiveau : Form
         mainPanel.Controls.Add(cardList, 1, 0);
 
         Controls.Add(mainPanel);
+        Controls.Add(titleBar);
     }
 
     private void LoadData()

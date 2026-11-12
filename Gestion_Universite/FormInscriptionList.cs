@@ -21,10 +21,11 @@ public partial class FormInscriptionList : Form
         BackColor = UITheme.AppBg;
         FormBorderStyle = FormBorderStyle.None;
 
-        var titleBar = UITheme.CreateTitleBar(this, "7. Inscriptions & Paiements - Liste", "📝");
-        Controls.Add(titleBar);
+        AutoScroll = true;
 
-        var content = new Panel { Dock = DockStyle.Fill, Padding = new Padding(16), BackColor = Color.Transparent };
+        var titleBar = UITheme.CreateTitleBar(this, "7. Inscriptions & Paiements - Liste", "📝");
+
+        var content = new Panel { Dock = DockStyle.Fill, Padding = new Padding(12), BackColor = Color.Transparent, AutoScroll = true };
 
         var card = UITheme.CreateCard("Registre des inscriptions", "📋");
         card.Dock = DockStyle.Fill;
@@ -48,16 +49,16 @@ public partial class FormInscriptionList : Form
         UITheme.StyleDataGridView(_dgvInscriptions);
 
         _dgvInscriptions.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColId", HeaderText = "ID", Visible = false });
-        _dgvInscriptions.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColMatricule", HeaderText = "Matricule", FillWeight = 90 });
-        _dgvInscriptions.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColEtudiant", HeaderText = "Étudiant", FillWeight = 140 });
-        _dgvInscriptions.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColClasse", HeaderText = "Classe", FillWeight = 85 });
-        _dgvInscriptions.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColAnnee", HeaderText = "Année", FillWeight = 85 });
-        _dgvInscriptions.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColPaye", HeaderText = "Payé (FCFA)", FillWeight = 95 });
-        _dgvInscriptions.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColSolde", HeaderText = "Solde (FCFA)", FillWeight = 95 });
-        _dgvInscriptions.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColStatut", HeaderText = "Statut", FillWeight = 75 });
+        _dgvInscriptions.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColMatricule", HeaderText = "Matricule", FillWeight = 90, MinimumWidth = 85 });
+        _dgvInscriptions.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColEtudiant", HeaderText = "Étudiant", FillWeight = 140, MinimumWidth = 120 });
+        _dgvInscriptions.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColClasse", HeaderText = "Classe", FillWeight = 85, MinimumWidth = 80 });
+        _dgvInscriptions.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColAnnee", HeaderText = "Année", FillWeight = 85, MinimumWidth = 80 });
+        _dgvInscriptions.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColPaye", HeaderText = "Payé (FCFA)", FillWeight = 95, MinimumWidth = 90 });
+        _dgvInscriptions.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColSolde", HeaderText = "Solde (FCFA)", FillWeight = 95, MinimumWidth = 90 });
+        _dgvInscriptions.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColStatut", HeaderText = "Statut", FillWeight = 75, MinimumWidth = 75 });
 
-        var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Détail/Paiement", Text = "💳", UseColumnTextForButtonValue = true, FillWeight = 60 };
-        var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "Suppr", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 40 };
+        var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Détail/Paiement", Text = "💳", UseColumnTextForButtonValue = true, FillWeight = 60, MinimumWidth = 55 };
+        var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "Suppr", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 40, MinimumWidth = 45 };
         _dgvInscriptions.Columns.AddRange(colEdit, colDelete);
         _dgvInscriptions.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
@@ -68,6 +69,7 @@ public partial class FormInscriptionList : Form
 
         content.Controls.Add(card);
         Controls.Add(content);
+        Controls.Add(titleBar);
     }
 
     private void LoadData()

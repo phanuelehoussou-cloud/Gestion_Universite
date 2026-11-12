@@ -34,23 +34,28 @@ public partial class FormClasseDetail : Form
         StartPosition = FormStartPosition.CenterParent;
         BackColor = UITheme.AppBg;
         FormBorderStyle = FormBorderStyle.None;
+        AutoScroll = true;
 
         var titleBar = UITheme.CreateTitleBar(this, _classeId == 0 ? "5. Classes - Nouvelle Classe" : "5. Classes - Modification", "👥", isDialog: true);
-        Controls.Add(titleBar);
 
         var card = UITheme.CreateCard("Informations de la classe", "👥");
         card.Dock = DockStyle.Fill;
-        card.Padding = new Padding(20);
+        card.Padding = new Padding(16);
 
         var pnlForm = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
             ColumnCount = 2,
             RowCount = 5,
-            Padding = new Padding(10)
+            Padding = new Padding(8)
         };
-        pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100));
+        pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 95));
         pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
 
         pnlForm.Controls.Add(new Label { Text = "Filière :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
         _cboFiliere = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
@@ -81,6 +86,7 @@ public partial class FormClasseDetail : Form
 
         card.Controls.Add(pnlForm);
         Controls.Add(card);
+        Controls.Add(titleBar);
     }
 
     private void LoadLookups()

@@ -28,13 +28,14 @@ public partial class FormEnseignantDetail : Form
     private void InitializeCustomComponents()
     {
         Text = _enseignantId == 0 ? "Ajouter un enseignant" : "Modifier un enseignant";
-        Size = new Size(540, 480);
+        Size = new Size(540, 520);
+        MinimumSize = new Size(500, 480);
+        AutoScroll = true;
         StartPosition = FormStartPosition.CenterParent;
         BackColor = UITheme.AppBg;
         FormBorderStyle = FormBorderStyle.None;
 
         var titleBar = UITheme.CreateTitleBar(this, _enseignantId == 0 ? "8. Enseignants - Nouvel Enseignant" : "8. Enseignants - Édition", "👨‍🏫", isDialog: true);
-        Controls.Add(titleBar);
 
         var card = UITheme.CreateCard("Fiche enseignant", "👨‍🏫");
         card.Dock = DockStyle.Fill;
@@ -49,6 +50,9 @@ public partial class FormEnseignantDetail : Form
         };
         pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 110));
         pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        for (int i = 0; i < 7; i++)
+            pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
 
         pnlForm.Controls.Add(new Label { Text = "Nom :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
         _txtNom = new TextBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
@@ -95,6 +99,7 @@ public partial class FormEnseignantDetail : Form
 
         card.Controls.Add(pnlForm);
         Controls.Add(card);
+        Controls.Add(titleBar);
     }
 
     private void LoadEnseignantData()

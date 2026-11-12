@@ -21,14 +21,16 @@ public partial class FormClasseList : Form
         BackColor = UITheme.AppBg;
         FormBorderStyle = FormBorderStyle.None;
 
+        AutoScroll = true;
+
         var titleBar = UITheme.CreateTitleBar(this, "5. Classes - Liste & Gestion", "👥");
-        Controls.Add(titleBar);
 
         var contentPanel = new Panel
         {
             Dock = DockStyle.Fill,
-            Padding = new Padding(16),
-            BackColor = Color.Transparent
+            Padding = new Padding(12),
+            BackColor = Color.Transparent,
+            AutoScroll = true
         };
 
         var cardList = UITheme.CreateCard("Liste des classes", "📋");
@@ -60,11 +62,11 @@ public partial class FormClasseList : Form
         UITheme.StyleDataGridView(_dgvClasses);
 
         _dgvClasses.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColId", HeaderText = "ID", Visible = false });
-        _dgvClasses.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColClasse", HeaderText = "Classe", FillWeight = 110 });
-        _dgvClasses.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColDetails", HeaderText = "Détails", FillWeight = 180 });
+        _dgvClasses.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColClasse", HeaderText = "Classe", FillWeight = 110, MinimumWidth = 100 });
+        _dgvClasses.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColDetails", HeaderText = "Détails", FillWeight = 180, MinimumWidth = 160 });
 
-        var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Action", Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 40 };
-        var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 40 };
+        var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Action", Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 40, MinimumWidth = 45 };
+        var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 40, MinimumWidth = 45 };
         _dgvClasses.Columns.AddRange(colEdit, colDelete);
         _dgvClasses.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
@@ -74,6 +76,7 @@ public partial class FormClasseList : Form
         cardList.Controls.Add(pnlActions);
         contentPanel.Controls.Add(cardList);
         Controls.Add(contentPanel);
+        Controls.Add(titleBar);
     }
 
     private void LoadData()

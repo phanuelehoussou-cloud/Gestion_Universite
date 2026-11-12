@@ -26,16 +26,18 @@ public partial class FormFiliere : Form
         BackColor = UITheme.AppBg;
         FormBorderStyle = FormBorderStyle.None;
 
+        AutoScroll = true;
+
         var titleBar = UITheme.CreateTitleBar(this, "3. Filières", "🎓");
-        Controls.Add(titleBar);
 
         var mainPanel = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
             ColumnCount = 2,
             RowCount = 1,
-            Padding = new Padding(16),
-            BackColor = Color.Transparent
+            Padding = new Padding(12),
+            BackColor = Color.Transparent,
+            AutoScroll = true
         };
         mainPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45F));
         mainPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 55F));
@@ -49,10 +51,15 @@ public partial class FormFiliere : Form
             Dock = DockStyle.Fill,
             ColumnCount = 2,
             RowCount = 5,
-            Padding = new Padding(8)
+            Padding = new Padding(6)
         };
-        pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120));
+        pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 115));
         pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 100));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 48));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
         pnlForm.Controls.Add(new Label { Text = "Nom de la filière :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
         _txtNom = new TextBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
@@ -88,11 +95,11 @@ public partial class FormFiliere : Form
         UITheme.StyleDataGridView(_dgvFilieres);
 
         _dgvFilieres.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColId", HeaderText = "ID", Visible = false });
-        _dgvFilieres.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColNom", HeaderText = "Filière", FillWeight = 160 });
-        _dgvFilieres.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColStatut", HeaderText = "Statut", FillWeight = 80 });
+        _dgvFilieres.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColNom", HeaderText = "Filière", FillWeight = 160, MinimumWidth = 120 });
+        _dgvFilieres.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColStatut", HeaderText = "Statut", FillWeight = 80, MinimumWidth = 80 });
 
-        var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Action", Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 40 };
-        var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 40 };
+        var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Action", Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 40, MinimumWidth = 45 };
+        var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 40, MinimumWidth = 45 };
         _dgvFilieres.Columns.AddRange(colEdit, colDelete);
         _dgvFilieres.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
@@ -102,6 +109,7 @@ public partial class FormFiliere : Form
         mainPanel.Controls.Add(cardList, 1, 0);
 
         Controls.Add(mainPanel);
+        Controls.Add(titleBar);
     }
 
     private void LoadData()

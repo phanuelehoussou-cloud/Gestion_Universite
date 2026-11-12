@@ -23,12 +23,13 @@ public partial class FormSalle : Form
     {
         Text = "Salles";
         Size = new Size(1000, 560);
+        MinimumSize = new Size(800, 480);
+        AutoScroll = false;
         StartPosition = FormStartPosition.CenterScreen;
         BackColor = UITheme.AppBg;
         FormBorderStyle = FormBorderStyle.None;
 
         var titleBar = UITheme.CreateTitleBar(this, "10. Salles de Cours", "🏛️");
-        Controls.Add(titleBar);
 
         var mainPanel = new TableLayoutPanel
         {
@@ -54,6 +55,9 @@ public partial class FormSalle : Form
         };
         pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 110));
         pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        for (int i = 0; i < 4; i++)
+            pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
 
         pnlForm.Controls.Add(new Label { Text = "Nom :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
         _txtNom = new TextBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
@@ -95,9 +99,9 @@ public partial class FormSalle : Form
         UITheme.StyleDataGridView(_dgvSalles);
 
         _dgvSalles.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColId", HeaderText = "ID", Visible = false });
-        _dgvSalles.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColNom", HeaderText = "Nom", FillWeight = 90 });
-        _dgvSalles.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColCapacite", HeaderText = "Capacité", FillWeight = 80 });
-        _dgvSalles.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColStatut", HeaderText = "Statut", FillWeight = 110 });
+        _dgvSalles.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColNom", HeaderText = "Nom", FillWeight = 90, MinimumWidth = 70 });
+        _dgvSalles.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColCapacite", HeaderText = "Capacité", FillWeight = 80, MinimumWidth = 60 });
+        _dgvSalles.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColStatut", HeaderText = "Statut", FillWeight = 110, MinimumWidth = 80 });
 
         var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Action", Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 35 };
         var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 35 };

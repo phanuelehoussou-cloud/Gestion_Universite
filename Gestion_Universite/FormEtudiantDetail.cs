@@ -35,17 +35,17 @@ public partial class FormEtudiantDetail : Form
     private void InitializeCustomComponents()
     {
         Text = _etudiantId == 0 ? "Nouveau dossier étudiant" : "Dossier étudiant";
-        Size = new Size(620, 580);
+        Size = new Size(640, 620);
         StartPosition = FormStartPosition.CenterParent;
         BackColor = UITheme.AppBg;
         FormBorderStyle = FormBorderStyle.None;
+        AutoScroll = true;
 
         var titleBar = UITheme.CreateTitleBar(this, _etudiantId == 0 ? "6. Étudiants - Nouveau Dossier" : "6. Étudiants - Dossier Détail", "🧑‍🎓", isDialog: true);
-        Controls.Add(titleBar);
 
         var card = UITheme.CreateCard("Dossier de l'étudiant", "🧑‍🎓");
         card.Dock = DockStyle.Fill;
-        card.Padding = new Padding(16);
+        card.Padding = new Padding(14);
 
         // Top section with Photo and Buttons
         var topSection = new Panel { Dock = DockStyle.Top, Height = 135 };
@@ -79,10 +79,15 @@ public partial class FormEtudiantDetail : Form
             Dock = DockStyle.Fill,
             ColumnCount = 2,
             RowCount = 8,
-            Padding = new Padding(10)
+            Padding = new Padding(6)
         };
-        pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 110));
+        pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100));
         pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        for (int i = 0; i < 7; i++)
+        {
+            pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 38));
+        }
+        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
 
         pnlForm.Controls.Add(new Label { Text = "Matricule :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
         _txtMatricule = new TextBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill, ReadOnly = true, BackColor = Color.FromArgb(248, 249, 250) };
@@ -123,6 +128,7 @@ public partial class FormEtudiantDetail : Form
 
         card.Controls.Add(pnlForm);
         Controls.Add(card);
+        Controls.Add(titleBar);
     }
 
     private void CreateDefaultAvatar()

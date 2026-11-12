@@ -21,14 +21,14 @@ public partial class FormMenuPrincipal : Form
     private void InitializeCustomComponents()
     {
         Text = "IIT - Gestion Universitaire";
-        Size = new Size(1280, 780);
+        Size = new Size(1200, 720);
+        MinimumSize = new Size(950, 600);
         StartPosition = FormStartPosition.CenterScreen;
         BackColor = UITheme.AppBg;
         FormBorderStyle = FormBorderStyle.None;
 
         // Custom Crimson Window Title Bar
         var titleBar = UITheme.CreateTitleBar(this, "IIT - Gestion Universitaire", "🎓");
-        Controls.Add(titleBar);
 
         // Sidebar Panel
         var pnlSidebar = new Panel
@@ -112,15 +112,16 @@ public partial class FormMenuPrincipal : Form
         AddNavButton(pnlNav, "🚪  Quitter", () => Application.Exit());
 
         pnlSidebar.Controls.Add(pnlNav);
-        Controls.Add(pnlSidebar);
-
         // Central Host Container
         _pnlMainContainer = new Panel
         {
             Dock = DockStyle.Fill,
-            BackColor = UITheme.AppBg
+            BackColor = UITheme.AppBg,
+            AutoScroll = true
         };
         Controls.Add(_pnlMainContainer);
+        Controls.Add(pnlSidebar);
+        Controls.Add(titleBar);
 
         // Build Dashboard View
         BuildDashboardView();
@@ -168,16 +169,17 @@ public partial class FormMenuPrincipal : Form
         {
             Dock = DockStyle.Fill,
             BackColor = UITheme.AppBg,
-            Padding = new Padding(24)
+            Padding = new Padding(20),
+            AutoScroll = true
         };
 
         // Welcome Hero Banner
         var pnlHero = new Panel
         {
             Dock = DockStyle.Top,
-            Height = 280,
+            Height = 220,
             BackColor = Color.White,
-            Margin = new Padding(0, 0, 0, 20)
+            Margin = new Padding(0, 0, 0, 15)
         };
         pnlHero.Paint += (s, e) =>
         {
@@ -352,7 +354,7 @@ public partial class FormMenuPrincipal : Form
 
     private void ShowDashboard()
     {
-        _pnlMainContainer.Controls.Clear();
+        ClearMainContainer();
         LoadDashboardStats();
         _pnlMainContainer.Controls.Add(_pnlDashboardView);
     }
@@ -367,12 +369,26 @@ public partial class FormMenuPrincipal : Form
 
     private void LoadEmbeddedForm(Form form)
     {
-        _pnlMainContainer.Controls.Clear();
+        ClearMainContainer();
         form.TopLevel = false;
         form.Dock = DockStyle.Fill;
         form.FormBorderStyle = FormBorderStyle.None;
+        form.AutoScroll = true;
         _pnlMainContainer.Controls.Add(form);
         form.Show();
+    }
+
+    private void ClearMainContainer()
+    {
+        while (_pnlMainContainer.Controls.Count > 0)
+        {
+            var currentView = _pnlMainContainer.Controls[0];
+            _pnlMainContainer.Controls.RemoveAt(0);
+            if (!ReferenceEquals(currentView, _pnlDashboardView))
+            {
+                currentView.Dispose();
+            }
+        }
     }
 
     private void ShowAbout()

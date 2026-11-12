@@ -78,6 +78,10 @@ public partial class FormInscriptionDetail : Form
         _cboClasse = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
         pnlFields.Controls.Add(_cboClasse, 1, 1);
 
+        pnlFields.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
+        pnlFields.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
+        pnlFields.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
+
         pnlFields.Controls.Add(new Label { Text = "Année :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 2);
         _cboAnnee = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
         pnlFields.Controls.Add(_cboAnnee, 1, 2);
@@ -89,8 +93,8 @@ public partial class FormInscriptionDetail : Form
         {
             Dock = DockStyle.Fill,
             BackColor = UITheme.PrimaryRed,
-            Padding = new Padding(16),
-            Margin = new Padding(10)
+            Padding = new Padding(12),
+            Margin = new Padding(6)
         };
         pnlSolde.Paint += (s, e) =>
         {
@@ -101,17 +105,17 @@ public partial class FormInscriptionDetail : Form
         var lblSoldeTitre = new Label
         {
             Text = "Solde actuel :",
-            Font = new Font("Segoe UI", 13f, FontStyle.Bold),
+            Font = new Font("Segoe UI", 12f, FontStyle.Bold),
             ForeColor = Color.White,
             Dock = DockStyle.Top,
-            Height = 32,
+            Height = 30,
             TextAlign = ContentAlignment.MiddleCenter
         };
 
         _lblSoldeMontant = new Label
         {
             Text = "50 000 FCFA",
-            Font = new Font("Segoe UI", 18f, FontStyle.Bold),
+            Font = new Font("Segoe UI", 16f, FontStyle.Bold),
             ForeColor = Color.White,
             Dock = DockStyle.Fill,
             TextAlign = ContentAlignment.MiddleCenter
@@ -122,7 +126,7 @@ public partial class FormInscriptionDetail : Form
         topSection.Controls.Add(pnlSolde, 1, 0);
 
         // Section: Paiements
-        var pnlPaiementsHeader = new Panel { Dock = DockStyle.Top, Height = 45, Padding = new Padding(4) };
+        var pnlPaiementsHeader = new Panel { Dock = DockStyle.Top, Height = 40, Padding = new Padding(4) };
         var lblPaiements = new Label
         {
             Text = "Historique des paiements",
@@ -152,29 +156,33 @@ public partial class FormInscriptionDetail : Form
         _dgvPaiements = new DataGridView { Dock = DockStyle.Fill };
         UITheme.StyleDataGridView(_dgvPaiements);
 
-        _dgvPaiements.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColDate", HeaderText = "Date", FillWeight = 100 });
-        _dgvPaiements.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColMontant", HeaderText = "Montant (FCFA)", FillWeight = 120 });
-        _dgvPaiements.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColMode", HeaderText = "Mode", FillWeight = 100 });
-        _dgvPaiements.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColReference", HeaderText = "Référence", FillWeight = 130 });
+        _dgvPaiements.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColDate", HeaderText = "Date", FillWeight = 100, MinimumWidth = 85 });
+        _dgvPaiements.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColMontant", HeaderText = "Montant (FCFA)", FillWeight = 120, MinimumWidth = 110 });
+        _dgvPaiements.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColMode", HeaderText = "Mode", FillWeight = 100, MinimumWidth = 85 });
+        _dgvPaiements.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColReference", HeaderText = "Référence", FillWeight = 130, MinimumWidth = 100 });
         _dgvPaiements.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-        // Bottom action buttons
-        var bottomBar = new Panel { Dock = DockStyle.Bottom, Height = 50, Padding = new Padding(6) };
-        var btnSave = UITheme.CreatePrimaryButton("Enregistrer");
-        btnSave.Location = new Point(card.Width - 360, 8);
-        btnSave.Click += BtnSave_Click;
-
-        var btnPrint = UITheme.CreateSecondaryButton("Imprimer reçu", "🖨");
-        btnPrint.Location = new Point(card.Width - 230, 8);
-        btnPrint.Click += BtnPrint_Click;
+        // Bottom action buttons in FlowLayoutPanel with RightToLeft
+        var bottomBar = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Bottom,
+            Height = 48,
+            FlowDirection = FlowDirection.RightToLeft,
+            Padding = new Padding(4)
+        };
 
         var btnClose = UITheme.CreateSecondaryButton("Fermer");
-        btnClose.Location = new Point(card.Width - 95, 8);
         btnClose.Click += (s, e) => Close();
 
-        bottomBar.Controls.Add(btnSave);
-        bottomBar.Controls.Add(btnPrint);
+        var btnPrint = UITheme.CreateSecondaryButton("Imprimer reçu", "🖨");
+        btnPrint.Click += BtnPrint_Click;
+
+        var btnSave = UITheme.CreatePrimaryButton("Enregistrer");
+        btnSave.Click += BtnSave_Click;
+
         bottomBar.Controls.Add(btnClose);
+        bottomBar.Controls.Add(btnPrint);
+        bottomBar.Controls.Add(btnSave);
 
         card.Controls.Add(_dgvPaiements);
         card.Controls.Add(pnlAddPayment);
@@ -184,6 +192,7 @@ public partial class FormInscriptionDetail : Form
 
         content.Controls.Add(card);
         Controls.Add(content);
+        Controls.Add(titleBar);
     }
 
     private void LoadLookups()
