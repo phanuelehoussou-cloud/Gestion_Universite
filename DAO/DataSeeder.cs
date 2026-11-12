@@ -92,10 +92,10 @@ public static class DataSeeder
             {
                 Id = 1,
                 Matricule = "IIT2026001",
-                Nom = "AHIBO",
+                Nom = "KING LORD",
                 Prenoms = "Phanuel",
                 Telephone = "0707070707",
-                Email = "phanuel.ahibo@iit.ci",
+                Email = "phanuel.kinglord@iit.ci",
                 Adresse = "Abidjan, Côte d'Ivoire",
                 ClasseActuelle = "Info L2 A",
                 Statut = "Actif",
@@ -146,7 +146,7 @@ public static class DataSeeder
             MontantPaye = 250000m,
             Statut = "Active",
             EtudiantMatricule = "IIT2026001",
-            EtudiantNomComplet = "AHIBO Phanuel",
+            EtudiantNomComplet = "KING LORD Phanuel",
             ClasseCode = "Info L2 A",
             AnneeCode = "2026 - 2027",
             Paiements = new List<Paiement>
