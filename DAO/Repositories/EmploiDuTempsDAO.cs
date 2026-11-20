@@ -9,7 +9,7 @@ public class EmploiDuTempsDAO
 
     public EmploiDuTempsDAO(IDataStore? store = null)
     {
-        _store = store ?? JsonDataStore.Instance;
+        _store = store ?? DataStoreProvider.Current;
     }
 
     public List<SeanceEmploiDuTemps> GetAll()
@@ -62,9 +62,10 @@ public class EmploiDuTempsDAO
             if (s.Id == seance.Id)
                 continue; // On s'ignore soi-même lors d'une modification
 
-            // Même jour et même créneau horaire
-            if (s.Jour.Equals(seance.Jour, StringComparison.OrdinalIgnoreCase) &&
-                s.HeureDebut.Equals(seance.HeureDebut, StringComparison.OrdinalIgnoreCase))
+            if (s.DateSeance.Date == seance.DateSeance.Date &&
+                TryParseTime(s.HeureDebut, out var existingStart) && TryParseTime(s.HeureFin, out var existingEnd) &&
+                TryParseTime(seance.HeureDebut, out var requestedStart) && TryParseTime(seance.HeureFin, out var requestedEnd) &&
+                existingStart < requestedEnd && existingEnd > requestedStart)
             {
                 // 1. Conflit de salle
                 if (s.SalleId == seance.SalleId)
@@ -93,7 +94,7 @@ public class EmploiDuTempsDAO
         var list = _store.GetCollection<SeanceEmploiDuTemps>();
         if (seance.Id == 0)
         {
-            seance.Id = list.Count > 0 ? list.Max(x => x.Id) + 1 : 1;
+            seance.Id = IdentityHelper.NextId(_store, list.Select(x => x.Id));
             list.Add(seance);
         }
         else
@@ -107,6 +108,13 @@ public class EmploiDuTempsDAO
 
         _store.SaveCollection(list);
         return true;
+    }
+
+    private static bool TryParseTime(string value, out TimeSpan time)
+    {
+        var normalized = value.Trim().Replace('h', ':').Replace('H', ':');
+        if (normalized.EndsWith(':')) normalized += "00";
+        return TimeSpan.TryParse(normalized, out time);
     }
 
     public void Delete(int id)

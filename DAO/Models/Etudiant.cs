@@ -6,6 +6,9 @@ public class Etudiant
     public string Matricule { get; set; } = string.Empty; // e.g. "IIT2026001"
     public string Nom { get; set; } = string.Empty;
     public string Prenoms { get; set; } = string.Empty;
+    public DateTime DateNaissance { get; set; } = DateTime.Today.AddYears(-18);
+    public string Sexe { get; set; } = "M";
+    public string Nationalite { get; set; } = "Ivoirienne";
     public string Telephone { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Adresse { get; set; } = string.Empty;

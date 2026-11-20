@@ -9,7 +9,7 @@ public class FiliereDAO
 
     public FiliereDAO(IDataStore? store = null)
     {
-        _store = store ?? JsonDataStore.Instance;
+        _store = store ?? DataStoreProvider.Current;
     }
 
     public List<Filiere> GetAll()
@@ -25,7 +25,7 @@ public class FiliereDAO
     public void Add(Filiere filiere)
     {
         var list = _store.GetCollection<Filiere>();
-        filiere.Id = list.Count > 0 ? list.Max(x => x.Id) + 1 : 1;
+        filiere.Id = IdentityHelper.NextId(_store, list.Select(x => x.Id));
         list.Add(filiere);
         _store.SaveCollection(list);
     }
@@ -55,7 +55,7 @@ public class NiveauDAO
 
     public NiveauDAO(IDataStore? store = null)
     {
-        _store = store ?? JsonDataStore.Instance;
+        _store = store ?? DataStoreProvider.Current;
     }
 
     public List<Niveau> GetAll()
@@ -71,7 +71,7 @@ public class NiveauDAO
     public void Add(Niveau niveau)
     {
         var list = _store.GetCollection<Niveau>();
-        niveau.Id = list.Count > 0 ? list.Max(x => x.Id) + 1 : 1;
+        niveau.Id = IdentityHelper.NextId(_store, list.Select(x => x.Id));
         list.Add(niveau);
         _store.SaveCollection(list);
     }

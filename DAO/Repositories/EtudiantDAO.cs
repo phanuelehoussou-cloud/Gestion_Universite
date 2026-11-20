@@ -9,7 +9,7 @@ public class EtudiantDAO
 
     public EtudiantDAO(IDataStore? store = null)
     {
-        _store = store ?? JsonDataStore.Instance;
+        _store = store ?? DataStoreProvider.Current;
     }
 
     public List<Etudiant> GetAll()
@@ -44,7 +44,7 @@ public class EtudiantDAO
     public void Add(Etudiant etudiant)
     {
         var list = _store.GetCollection<Etudiant>();
-        etudiant.Id = list.Count > 0 ? list.Max(x => x.Id) + 1 : 1;
+        etudiant.Id = IdentityHelper.NextId(_store, list.Select(x => x.Id));
         if (string.IsNullOrWhiteSpace(etudiant.Matricule))
         {
             var year = DateTime.Now.Year;
@@ -79,7 +79,7 @@ public class EtudiantDAO
         {
             if (piece.Id == 0)
             {
-                piece.Id = etudiant.Pieces.Count > 0 ? etudiant.Pieces.Max(p => p.Id) + 1 : 1;
+                piece.Id = IdentityHelper.NextId(_store, etudiant.Pieces.Select(p => p.Id));
                 piece.EtudiantId = etudiantId;
                 etudiant.Pieces.Add(piece);
             }

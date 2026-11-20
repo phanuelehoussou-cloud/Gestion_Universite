@@ -9,7 +9,7 @@ public class InscriptionDAO
 
     public InscriptionDAO(IDataStore? store = null)
     {
-        _store = store ?? JsonDataStore.Instance;
+        _store = store ?? DataStoreProvider.Current;
     }
 
     public List<Inscription> GetAll()
@@ -40,7 +40,7 @@ public class InscriptionDAO
                 ins.AnneeCode = an.Code;
             }
 
-            ins.MontantPaye = ins.Paiements?.Sum(p => p.Montant) ?? 0;
+            ins.MontantPaye = ins.Paiements?.Where(p => string.Equals(p.Statut, "Effectué", StringComparison.OrdinalIgnoreCase)).Sum(p => p.Montant) ?? 0;
         }
 
         return inscriptions.OrderByDescending(i => i.DateInscription).ToList();
@@ -75,7 +75,7 @@ public class InscriptionDAO
         var list = _store.GetCollection<Inscription>();
         if (ins.Id == 0)
         {
-            ins.Id = list.Count > 0 ? list.Max(x => x.Id) + 1 : 1;
+            ins.Id = IdentityHelper.NextId(_store, list.Select(x => x.Id));
             list.Add(ins);
         }
         else
@@ -113,10 +113,25 @@ public class InscriptionDAO
             return false;
         }
 
-        paiement.Id = ins.Paiements.Count > 0 ? ins.Paiements.Max(p => p.Id) + 1 : 1;
+        ins.Paiements ??= new List<Paiement>();
+        var montantDejaPaye = ins.Paiements.Sum(p => p.Montant);
+        var solde = ins.MontantTotal - montantDejaPaye;
+        if (paiement.Montant <= 0)
+        {
+            errorMessage = "Le montant du paiement doit être supérieur à zéro.";
+            return false;
+        }
+
+        if (paiement.Montant > solde)
+        {
+            errorMessage = $"Le paiement dépasse le solde restant ({solde:N0} FCFA).";
+            return false;
+        }
+
+        paiement.Id = IdentityHelper.NextId(_store, ins.Paiements.Select(p => p.Id));
         paiement.InscriptionId = inscriptionId;
         ins.Paiements.Add(paiement);
-        ins.MontantPaye = ins.Paiements.Sum(p => p.Montant);
+        ins.MontantPaye = ins.Paiements.Where(p => string.Equals(p.Statut, "Effectué", StringComparison.OrdinalIgnoreCase)).Sum(p => p.Montant);
 
         _store.SaveCollection(list);
         return true;

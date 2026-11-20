@@ -1,0 +1,172 @@
+using DAO.Models;
+using DAO.Repositories;
+#nullable enable
+namespace Gestion_Universite;
+
+partial class FormClasseDetail
+{
+    private System.ComponentModel.IContainer? components = null;
+    private Panel pnlHeader = null!;
+    private Label lblTitle = null!;
+    private Label lblSubtitle = null!;
+    private TableLayoutPanel layoutFields = null!;
+    private Label lblFiliere = null!;
+    private Label lblNiveau = null!;
+    private Label lblAnnee = null!;
+    private Label lblGroupe = null!;
+    private ComboBox _cboFiliere = null!;
+    private ComboBox _cboNiveau = null!;
+    private ComboBox _cboAnnee = null!;
+    private ComboBox _cboGroupe = null!;
+    private FlowLayoutPanel pnlActions = null!;
+    private Button btnSave = null!;
+    private Button btnCancel = null!;
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing) components?.Dispose();
+        base.Dispose(disposing);
+    }
+
+    private void InitializeComponent()
+    {
+        components = new System.ComponentModel.Container();
+        pnlHeader = new Panel();
+        lblTitle = new Label();
+        lblSubtitle = new Label();
+        layoutFields = new TableLayoutPanel();
+        lblFiliere = new Label();
+        lblNiveau = new Label();
+        lblAnnee = new Label();
+        lblGroupe = new Label();
+        _cboFiliere = new ComboBox();
+        _cboNiveau = new ComboBox();
+        _cboAnnee = new ComboBox();
+        _cboGroupe = new ComboBox();
+        pnlActions = new FlowLayoutPanel();
+        btnSave = new Button();
+        btnCancel = new Button();
+        SuspendLayout();
+        pnlHeader.BackColor = Color.FromArgb(139, 0, 0);
+        pnlHeader.Controls.Add(lblTitle);
+        pnlHeader.Controls.Add(lblSubtitle);
+        pnlHeader.Dock = DockStyle.Top;
+        pnlHeader.Height = 94;
+        lblTitle.AutoSize = true;
+        lblTitle.Font = new Font("Segoe UI", 19F, FontStyle.Bold);
+        lblTitle.ForeColor = Color.White;
+        lblTitle.Location = new Point(26, 14);
+        lblTitle.Text = "Nouvelle classe";
+        lblSubtitle.AutoSize = true;
+        lblSubtitle.Font = new Font("Segoe UI", 10F);
+        lblSubtitle.ForeColor = Color.FromArgb(245, 225, 225);
+        lblSubtitle.Location = new Point(29, 57);
+        lblSubtitle.Text = "Choisissez la filière, le niveau, l’année et le groupe.";
+
+        layoutFields.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        layoutFields.ColumnCount = 2;
+        layoutFields.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 175F));
+        layoutFields.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+        layoutFields.Location = new Point(32, 126);
+        layoutFields.RowCount = 4;
+        layoutFields.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
+        layoutFields.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
+        layoutFields.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
+        layoutFields.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
+        layoutFields.Size = new Size(676, 240);
+        layoutFields.Padding = new Padding(0, 4, 0, 4);
+        lblFiliere.AutoSize = true;
+        lblFiliere.Dock = DockStyle.Fill;
+        lblFiliere.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        lblFiliere.Margin = new Padding(0, 0, 10, 0);
+        lblFiliere.Text = "Filière";
+        lblFiliere.TextAlign = ContentAlignment.MiddleLeft;
+        lblNiveau.AutoSize = true;
+        lblNiveau.Dock = DockStyle.Fill;
+        lblNiveau.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        lblNiveau.Margin = new Padding(0, 0, 10, 0);
+        lblNiveau.Text = "Niveau";
+        lblNiveau.TextAlign = ContentAlignment.MiddleLeft;
+        lblAnnee.AutoSize = true;
+        lblAnnee.Dock = DockStyle.Fill;
+        lblAnnee.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        lblAnnee.Margin = new Padding(0, 0, 10, 0);
+        lblAnnee.Text = "Année académique";
+        lblAnnee.TextAlign = ContentAlignment.MiddleLeft;
+        lblGroupe.AutoSize = true;
+        lblGroupe.Dock = DockStyle.Fill;
+        lblGroupe.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        lblGroupe.Margin = new Padding(0, 0, 10, 0);
+        lblGroupe.Text = "Groupe";
+        lblGroupe.TextAlign = ContentAlignment.MiddleLeft;
+        _cboFiliere.Dock = DockStyle.Fill;
+        _cboFiliere.DropDownStyle = ComboBoxStyle.DropDownList;
+        _cboFiliere.Font = new Font("Segoe UI", 10F);
+        _cboFiliere.Margin = new Padding(0, 12, 0, 12);
+        _cboNiveau.Dock = DockStyle.Fill;
+        _cboNiveau.DropDownStyle = ComboBoxStyle.DropDownList;
+        _cboNiveau.Font = new Font("Segoe UI", 10F);
+        _cboNiveau.Margin = new Padding(0, 12, 0, 12);
+        _cboAnnee.Dock = DockStyle.Fill;
+        _cboAnnee.DropDownStyle = ComboBoxStyle.DropDownList;
+        _cboAnnee.Font = new Font("Segoe UI", 10F);
+        _cboAnnee.Margin = new Padding(0, 12, 0, 12);
+        _cboGroupe.Dock = DockStyle.Fill;
+        _cboGroupe.DropDownStyle = ComboBoxStyle.DropDownList;
+        _cboGroupe.Font = new Font("Segoe UI", 10F);
+        _cboGroupe.Margin = new Padding(0, 12, 0, 12);
+        _cboGroupe.Items.AddRange(new object[] { "A", "B", "C", "D" });
+        layoutFields.Controls.Add(lblFiliere, 0, 0);
+        layoutFields.Controls.Add(_cboFiliere, 1, 0);
+        layoutFields.Controls.Add(lblNiveau, 0, 1);
+        layoutFields.Controls.Add(_cboNiveau, 1, 1);
+        layoutFields.Controls.Add(lblAnnee, 0, 2);
+        layoutFields.Controls.Add(_cboAnnee, 1, 2);
+        layoutFields.Controls.Add(lblGroupe, 0, 3);
+        layoutFields.Controls.Add(_cboGroupe, 1, 3);
+
+        pnlActions.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+        pnlActions.AutoSize = true;
+        pnlActions.FlowDirection = FlowDirection.LeftToRight;
+        pnlActions.Location = new Point(434, 390);
+        pnlActions.WrapContents = false;
+        btnCancel.BackColor = Color.White;
+        btnCancel.FlatAppearance.BorderColor = Color.FromArgb(205, 210, 216);
+        btnCancel.FlatStyle = FlatStyle.Flat;
+        btnCancel.Font = new Font("Segoe UI", 10F);
+        btnCancel.Size = new Size(120, 40);
+        btnCancel.Text = "Annuler";
+        btnCancel.Click += BtnCancel_Click;
+        btnSave.BackColor = Color.FromArgb(139, 0, 0);
+        btnSave.FlatAppearance.BorderSize = 0;
+        btnSave.FlatStyle = FlatStyle.Flat;
+        btnSave.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        btnSave.ForeColor = Color.White;
+        btnSave.Margin = new Padding(10, 0, 0, 0);
+        btnSave.Size = new Size(180, 40);
+        btnSave.Text = "Enregistrer la classe";
+        btnSave.Click += BtnSave_Click;
+        pnlActions.Controls.Add(btnCancel);
+        pnlActions.Controls.Add(btnSave);
+
+        AutoScaleDimensions = new SizeF(8F, 20F);
+        AutoScaleMode = AutoScaleMode.Font;
+        BackColor = Color.FromArgb(246, 247, 249);
+        ClientSize = new Size(760, 480);
+        Controls.Add(pnlActions);
+        Controls.Add(layoutFields);
+        Controls.Add(pnlHeader);
+        Font = new Font("Segoe UI", 10F);
+        FormBorderStyle = FormBorderStyle.FixedDialog;
+        MaximizeBox = false;
+        MinimizeBox = false;
+        MinimumSize = new Size(720, 460);
+        Name = "FormClasseDetail";
+        StartPosition = FormStartPosition.CenterParent;
+        Text = "Nouvelle classe";
+        AcceptButton = btnSave;
+        CancelButton = btnCancel;
+        ResumeLayout(false);
+        PerformLayout();
+    }
+}

@@ -4,5 +4,5 @@
   </Folder>
   <Project Path="DataAccess/DataAccess.csproj" />
   <Project Path="DAO/DAO.csproj" />
-  <Project Path="Gestion_Universite/Gestion_Universite.csproj" />
+  <Project Path="Gestion_Universite/Gestion_Universite.csproj" DefaultStartup="true" />
 </Solution>

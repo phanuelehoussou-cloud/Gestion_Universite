@@ -7,6 +7,7 @@ public class Inscription
     public int ClasseId { get; set; }
     public int AnneeAcademiqueId { get; set; }
     public DateTime DateInscription { get; set; } = DateTime.Now;
+    public string TypeInscription { get; set; } = "PREMIERE";
     public decimal MontantTotal { get; set; } = 300000m;
     public string Statut { get; set; } = "Active"; // "Active", "Annulée"
 
@@ -33,6 +34,7 @@ public class Paiement
     public string ModePaiement { get; set; } = "Virement"; // "Virement", "Espèces", "Mobile Money", "Chèque"
     public string Reference { get; set; } = string.Empty;
     public string Remarque { get; set; } = string.Empty;
+    public string Statut { get; set; } = "Effectué";
 
     public override string ToString() => $"{DatePaiement:dd/MM/yyyy} - {Montant:N0} FCFA ({ModePaiement})";
 }

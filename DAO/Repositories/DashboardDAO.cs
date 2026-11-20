@@ -9,40 +9,41 @@ public class DashboardDAO
 
     public DashboardDAO(IDataStore? store = null)
     {
-        _store = store ?? JsonDataStore.Instance;
+        _store = store ?? DataStoreProvider.Current;
     }
 
     public DashboardStatistiques GetStatistiques()
     {
         var inscriptions = _store.GetCollection<Inscription>();
         var classes = _store.GetCollection<Classe>();
-        var etudiants = _store.GetCollection<Etudiant>();
+        var annees = _store.GetCollection<AnneeAcademique>();
         var enseignants = _store.GetCollection<Enseignant>();
         var salles = _store.GetCollection<Salle>();
 
-        // Calcul des recettes du jour ou récentes
-        decimal recettes = 0;
-        foreach (var ins in inscriptions)
-        {
-            if (ins.Paiements != null)
-            {
-                recettes += ins.Paiements.Sum(p => p.Montant);
-            }
-        }
+        var inscriptionsActives = inscriptions
+            .Where(i => string.Equals(i.Statut, "Active", StringComparison.OrdinalIgnoreCase))
+            .ToList();
 
-        // Si nouvel environnement, on garantit au moins les chiffres de référence du visuel
-        var nbEtudiants = Math.Max(etudiants.Count, 1248);
-        var nbClasses = Math.Max(classes.Count, 12);
-        if (recettes == 0)
-            recettes = 2850000m;
+        var anneesOuvertes = annees
+            .Where(a => string.Equals(a.Statut, "Ouverte", StringComparison.OrdinalIgnoreCase))
+            .Select(a => a.Id)
+            .ToHashSet();
+
+        var recettesDuJour = inscriptions
+            .SelectMany(i => i.Paiements ?? new List<Paiement>())
+            .Where(p => p.DatePaiement.Date == DateTime.Today && string.Equals(p.Statut, "Effectué", StringComparison.OrdinalIgnoreCase))
+            .Sum(p => p.Montant);
 
         return new DashboardStatistiques
         {
-            TotalEtudiantsInscrits = nbEtudiants,
-            TotalClassesActives = nbClasses,
-            RecettesDuJour = recettes,
-            TotalEnseignants = Math.Max(enseignants.Count, 28),
-            TotalSalles = Math.Max(salles.Count, 15)
+            TotalEtudiantsInscrits = inscriptionsActives
+                .Select(i => i.EtudiantId)
+                .Distinct()
+                .Count(),
+            TotalClassesActives = classes.Count(c => anneesOuvertes.Contains(c.AnneeAcademiqueId)),
+            RecettesDuJour = recettesDuJour,
+            TotalEnseignants = enseignants.Count(e => string.Equals(e.Statut, "Actif", StringComparison.OrdinalIgnoreCase)),
+            TotalSalles = salles.Count(s => string.Equals(s.Statut, "Disponible", StringComparison.OrdinalIgnoreCase))
         };
     }
 }

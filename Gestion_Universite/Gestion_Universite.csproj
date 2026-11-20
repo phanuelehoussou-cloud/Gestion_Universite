@@ -13,4 +13,30 @@
     <ProjectReference Include="..\DAO\DAO.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="FormAbsences.Designer.cs"><DependentUpon>FormAbsences.cs</DependentUpon></Compile>
+    <Compile Update="FormAnneeSemestre.Designer.cs"><DependentUpon>FormAnneeSemestre.cs</DependentUpon></Compile>
+    <Compile Update="FormClasseDetail.Designer.cs"><DependentUpon>FormClasseDetail.cs</DependentUpon></Compile>
+    <Compile Update="FormClasseList.Designer.cs"><DependentUpon>FormClasseList.cs</DependentUpon></Compile>
+    <Compile Update="FormCours.Designer.cs"><DependentUpon>FormCours.cs</DependentUpon></Compile>
+    <Compile Update="FormEmploiDuTemps.Designer.cs"><DependentUpon>FormEmploiDuTemps.cs</DependentUpon></Compile>
+    <Compile Update="FormEnseignantDetail.Designer.cs"><DependentUpon>FormEnseignantDetail.cs</DependentUpon></Compile>
+    <Compile Update="FormEnseignantList.Designer.cs"><DependentUpon>FormEnseignantList.cs</DependentUpon></Compile>
+    <Compile Update="FormEtudiantDetail.Designer.cs"><DependentUpon>FormEtudiantDetail.cs</DependentUpon></Compile>
+    <Compile Update="FormEtudiantList.Designer.cs"><DependentUpon>FormEtudiantList.cs</DependentUpon></Compile>
+    <Compile Update="FormFiliere.Designer.cs"><DependentUpon>FormFiliere.cs</DependentUpon></Compile>
+    <Compile Update="FormInscriptionDetail.Designer.cs"><DependentUpon>FormInscriptionDetail.cs</DependentUpon></Compile>
+    <Compile Update="FormInscriptionList.Designer.cs"><DependentUpon>FormInscriptionList.cs</DependentUpon></Compile>
+    <Compile Update="FormMenuPrincipal.Designer.cs"><DependentUpon>FormMenuPrincipal.cs</DependentUpon></Compile>
+    <Compile Update="FormNiveau.Designer.cs"><DependentUpon>FormNiveau.cs</DependentUpon></Compile>
+    <Compile Update="FormPiecesEtudiant.Designer.cs"><DependentUpon>FormPiecesEtudiant.cs</DependentUpon></Compile>
+    <Compile Update="FormSalle.Designer.cs"><DependentUpon>FormSalle.cs</DependentUpon></Compile>
+    <Compile Update="FormSeanceDetail.Designer.cs"><DependentUpon>FormSeanceDetail.cs</DependentUpon></Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\Database\001_inscription_amount.sql" Link="Database\001_inscription_amount.sql" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\Database\002_absences.sql" Link="Database\002_absences.sql" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

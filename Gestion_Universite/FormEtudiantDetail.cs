@@ -8,128 +8,30 @@ public partial class FormEtudiantDetail : Form
     private readonly EtudiantDAO _etudiantDao = new();
     private readonly ClasseDAO _classeDao = new();
 
-    private TextBox _txtMatricule = null!;
-    private TextBox _txtNom = null!;
-    private TextBox _txtPrenoms = null!;
-    private TextBox _txtTelephone = null!;
-    private TextBox _txtAdresse = null!;
-    private TextBox _txtEmail = null!;
-    private ComboBox _cboClasse = null!;
-    private PictureBox _picPhoto = null!;
+
     private int _etudiantId = 0;
     private string? _selectedPhotoPath;
 
     public event EventHandler? DataSaved;
 
-    public FormEtudiantDetail(int etudiantId = 0)
+    public FormEtudiantDetail() : this(0) { }
+
+    public FormEtudiantDetail(int etudiantId)
     {
         _etudiantId = etudiantId;
-        InitializeCustomComponents();
-        LoadLookups();
-        if (_etudiantId > 0)
-            LoadEtudiantData();
-        else
-            GenerateMatricule();
+        InitializeComponent();
+        Load += (_, _) =>
+        {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            LoadLookups();
+            if (_etudiantId > 0)
+                LoadEtudiantData();
+            else
+                GenerateMatricule();
+        };
     }
 
-    private void InitializeCustomComponents()
-    {
-        Text = _etudiantId == 0 ? "Nouveau dossier étudiant" : "Dossier étudiant";
-        Size = new Size(640, 620);
-        StartPosition = FormStartPosition.CenterParent;
-        BackColor = UITheme.AppBg;
-        FormBorderStyle = FormBorderStyle.None;
-        AutoScroll = true;
 
-        var titleBar = UITheme.CreateTitleBar(this, _etudiantId == 0 ? "6. Étudiants - Nouveau Dossier" : "6. Étudiants - Dossier Détail", "🧑‍🎓", isDialog: true);
-
-        var card = UITheme.CreateCard("Dossier de l'étudiant", "🧑‍🎓");
-        card.Dock = DockStyle.Fill;
-        card.Padding = new Padding(14);
-
-        // Top section with Photo and Buttons
-        var topSection = new Panel { Dock = DockStyle.Top, Height = 135 };
-
-        _picPhoto = new PictureBox
-        {
-            Size = new Size(100, 115),
-            Location = new Point(12, 10),
-            BorderStyle = BorderStyle.FixedSingle,
-            SizeMode = PictureBoxSizeMode.Zoom,
-            BackColor = Color.FromArgb(240, 240, 240)
-        };
-        CreateDefaultAvatar();
-
-        var btnPhoto = UITheme.CreateSecondaryButton("Photo", "📷");
-        btnPhoto.Location = new Point(125, 20);
-        btnPhoto.Click += BtnPhoto_Click;
-
-        var btnPieces = UITheme.CreateSecondaryButton("Pièces administratives", "📁");
-        btnPieces.Location = new Point(125, 65);
-        btnPieces.Click += BtnPieces_Click;
-
-        topSection.Controls.Add(_picPhoto);
-        topSection.Controls.Add(btnPhoto);
-        topSection.Controls.Add(btnPieces);
-        card.Controls.Add(topSection);
-
-        // Fields table
-        var pnlForm = new TableLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            ColumnCount = 2,
-            RowCount = 8,
-            Padding = new Padding(6)
-        };
-        pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100));
-        pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-        for (int i = 0; i < 7; i++)
-        {
-            pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 38));
-        }
-        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
-
-        pnlForm.Controls.Add(new Label { Text = "Matricule :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
-        _txtMatricule = new TextBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill, ReadOnly = true, BackColor = Color.FromArgb(248, 249, 250) };
-        pnlForm.Controls.Add(_txtMatricule, 1, 0);
-
-        pnlForm.Controls.Add(new Label { Text = "Nom :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 1);
-        _txtNom = new TextBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
-        pnlForm.Controls.Add(_txtNom, 1, 1);
-
-        pnlForm.Controls.Add(new Label { Text = "Prénoms :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 2);
-        _txtPrenoms = new TextBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
-        pnlForm.Controls.Add(_txtPrenoms, 1, 2);
-
-        pnlForm.Controls.Add(new Label { Text = "Téléphone :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 3);
-        _txtTelephone = new TextBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
-        pnlForm.Controls.Add(_txtTelephone, 1, 3);
-
-        pnlForm.Controls.Add(new Label { Text = "Adresse :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 4);
-        _txtAdresse = new TextBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
-        pnlForm.Controls.Add(_txtAdresse, 1, 4);
-
-        pnlForm.Controls.Add(new Label { Text = "Email :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 5);
-        _txtEmail = new TextBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
-        pnlForm.Controls.Add(_txtEmail, 1, 5);
-
-        pnlForm.Controls.Add(new Label { Text = "Classe :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 6);
-        _cboClasse = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
-        pnlForm.Controls.Add(_cboClasse, 1, 6);
-
-        var pnlBtns = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.LeftToRight };
-        var btnSave = UITheme.CreatePrimaryButton("Enregistrer");
-        btnSave.Click += BtnSave_Click;
-        var btnCancel = UITheme.CreateSecondaryButton("Fermer");
-        btnCancel.Click += (s, e) => Close();
-        pnlBtns.Controls.Add(btnSave);
-        pnlBtns.Controls.Add(btnCancel);
-        pnlForm.Controls.Add(pnlBtns, 1, 7);
-
-        card.Controls.Add(pnlForm);
-        Controls.Add(card);
-        Controls.Add(titleBar);
-    }
 
     private void CreateDefaultAvatar()
     {
@@ -171,6 +73,9 @@ public partial class FormEtudiantDetail : Form
             _txtMatricule.Text = etu.Matricule;
             _txtNom.Text = etu.Nom;
             _txtPrenoms.Text = etu.Prenoms;
+            _dateNaissance.Value = etu.DateNaissance == DateTime.MinValue ? DateTime.Today.AddYears(-18) : etu.DateNaissance;
+            _cboSexe.SelectedItem = etu.Sexe;
+            _txtNationalite.Text = etu.Nationalite;
             _txtTelephone.Text = etu.Telephone;
             _txtAdresse.Text = etu.Adresse;
             _txtEmail.Text = etu.Email;
@@ -219,9 +124,9 @@ public partial class FormEtudiantDetail : Form
 
     private void BtnSave_Click(object? sender, EventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(_txtNom.Text) || string.IsNullOrWhiteSpace(_txtPrenoms.Text))
+        if (string.IsNullOrWhiteSpace(_txtNom.Text) || string.IsNullOrWhiteSpace(_txtPrenoms.Text) || string.IsNullOrWhiteSpace(_txtNationalite.Text))
         {
-            MessageBox.Show("Le nom et le prénom de l'étudiant sont obligatoires.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Le nom, les prénoms et la nationalité de l'étudiant sont obligatoires.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
@@ -234,6 +139,9 @@ public partial class FormEtudiantDetail : Form
                 Matricule = _txtMatricule.Text.Trim(),
                 Nom = _txtNom.Text.Trim(),
                 Prenoms = _txtPrenoms.Text.Trim(),
+                DateNaissance = _dateNaissance.Value.Date,
+                Sexe = _cboSexe.SelectedItem?.ToString() ?? "M",
+                Nationalite = _txtNationalite.Text.Trim(),
                 Telephone = _txtTelephone.Text.Trim(),
                 Adresse = _txtAdresse.Text.Trim(),
                 Email = _txtEmail.Text.Trim(),
@@ -252,6 +160,9 @@ public partial class FormEtudiantDetail : Form
             {
                 etu.Nom = _txtNom.Text.Trim();
                 etu.Prenoms = _txtPrenoms.Text.Trim();
+                etu.DateNaissance = _dateNaissance.Value.Date;
+                etu.Sexe = _cboSexe.SelectedItem?.ToString() ?? "M";
+                etu.Nationalite = _txtNationalite.Text.Trim();
                 etu.Telephone = _txtTelephone.Text.Trim();
                 etu.Adresse = _txtAdresse.Text.Trim();
                 etu.Email = _txtEmail.Text.Trim();

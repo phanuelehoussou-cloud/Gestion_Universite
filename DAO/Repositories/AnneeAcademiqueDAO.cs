@@ -9,7 +9,7 @@ public class AnneeAcademiqueDAO
 
     public AnneeAcademiqueDAO(IDataStore? store = null)
     {
-        _store = store ?? JsonDataStore.Instance;
+        _store = store ?? DataStoreProvider.Current;
     }
 
     public List<AnneeAcademique> GetAll()
@@ -30,7 +30,7 @@ public class AnneeAcademiqueDAO
     public void Add(AnneeAcademique annee)
     {
         var list = _store.GetCollection<AnneeAcademique>();
-        annee.Id = list.Count > 0 ? list.Max(x => x.Id) + 1 : 1;
+        annee.Id = IdentityHelper.NextId(_store, list.Select(x => x.Id));
         list.Add(annee);
         _store.SaveCollection(list);
     }
@@ -58,7 +58,7 @@ public class AnneeAcademiqueDAO
         var annee = GetById(anneeId);
         if (annee != null)
         {
-            sem.Id = annee.Semestres.Count > 0 ? annee.Semestres.Max(s => s.Id) + 1 : 1;
+            sem.Id = IdentityHelper.NextId(_store, annee.Semestres.Select(s => s.Id));
             sem.AnneeAcademiqueId = anneeId;
             annee.Semestres.Add(sem);
             Update(annee);

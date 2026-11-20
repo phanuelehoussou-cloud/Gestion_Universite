@@ -1,5 +1,5 @@
 using DataAccess;
-using DAO;
+using DAO.Repositories;
 
 namespace Gestion_Universite;
 
@@ -9,15 +9,32 @@ internal static class Program
     static void Main()
     {
         ApplicationConfiguration.Initialize();
+        Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+        Application.ThreadException += (_, e) =>
+        {
+            var detail = e.Exception.GetBaseException().Message;
+            MessageBox.Show(
+                $"L'opération n'a pas pu être terminée.\n\nDétail : {detail}",
+                "Erreur",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        };
 
-        // 1. Initialisation de la base de données & Injection des données initiales (Seeds)
-        DataSeeder.Initialize(JsonDataStore.Instance);
-
-        // 2. Génération automatique du script SQL de création de tables pour l'utilisateur
-        var scriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "script_creation_bdd.sql");
-        DbHelper.GenerateScriptFile(scriptPath);
-
-        // 3. Démarrage sur le Menu Principal (Dashboard & Formulaires)
-        Application.Run(new FormMenuPrincipal());
+        try
+        {
+            SqlServerDatabase.VerifyConnection();
+            DatabaseMigrationRunner.ApplyPendingMigrations();
+            DataStoreProvider.Current = SqlServerDataStore.Instance;
+            Application.Run(new FormMenuPrincipal());
+        }
+        catch (Exception ex)
+        {
+            var detail = ex.GetBaseException().Message;
+            MessageBox.Show(
+                $"L'application n'a pas pu démarrer.\n\nDétail : {detail}",
+                "Erreur au démarrage",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
     }
 }

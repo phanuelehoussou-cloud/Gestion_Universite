@@ -9,7 +9,7 @@ public class EnseignantDAO
 
     public EnseignantDAO(IDataStore? store = null)
     {
-        _store = store ?? JsonDataStore.Instance;
+        _store = store ?? DataStoreProvider.Current;
     }
 
     public List<Enseignant> GetAll()
@@ -25,7 +25,7 @@ public class EnseignantDAO
     public void Add(Enseignant enseignant)
     {
         var list = _store.GetCollection<Enseignant>();
-        enseignant.Id = list.Count > 0 ? list.Max(x => x.Id) + 1 : 1;
+        enseignant.Id = IdentityHelper.NextId(_store, list.Select(x => x.Id));
         list.Add(enseignant);
         _store.SaveCollection(list);
     }
@@ -55,7 +55,7 @@ public class CoursDAO
 
     public CoursDAO(IDataStore? store = null)
     {
-        _store = store ?? JsonDataStore.Instance;
+        _store = store ?? DataStoreProvider.Current;
     }
 
     public List<Cours> GetAll()
@@ -71,7 +71,7 @@ public class CoursDAO
     public void Add(Cours cours)
     {
         var list = _store.GetCollection<Cours>();
-        cours.Id = list.Count > 0 ? list.Max(x => x.Id) + 1 : 1;
+        cours.Id = IdentityHelper.NextId(_store, list.Select(x => x.Id));
         list.Add(cours);
         _store.SaveCollection(list);
     }
@@ -101,7 +101,7 @@ public class SalleDAO
 
     public SalleDAO(IDataStore? store = null)
     {
-        _store = store ?? JsonDataStore.Instance;
+        _store = store ?? DataStoreProvider.Current;
     }
 
     public List<Salle> GetAll()
@@ -117,7 +117,7 @@ public class SalleDAO
     public void Add(Salle salle)
     {
         var list = _store.GetCollection<Salle>();
-        salle.Id = list.Count > 0 ? list.Max(x => x.Id) + 1 : 1;
+        salle.Id = IdentityHelper.NextId(_store, list.Select(x => x.Id));
         list.Add(salle);
         _store.SaveCollection(list);
     }

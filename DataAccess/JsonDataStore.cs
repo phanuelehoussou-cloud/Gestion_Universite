@@ -42,18 +42,18 @@ public class JsonDataStore : IDataStore
             {
                 var json = File.ReadAllText(_filePath);
                 var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
-                if (dict != null)
-                {
-                    _store.Clear();
-                    foreach (var kvp in dict)
-                    {
-                        _store[kvp.Key] = kvp.Value;
-                    }
-                }
+                if (dict == null)
+                    throw new InvalidDataException("Le fichier de données ne contient pas de collections valides.");
+
+                _store.Clear();
+                foreach (var kvp in dict)
+                    _store[kvp.Key] = kvp.Value;
             }
-            catch
+            catch (Exception ex) when (ex is not InvalidDataException)
             {
-                // In case of corrupt file, fallback gracefully
+                throw new InvalidDataException(
+                    $"Le fichier de données locales '{Path.GetFileName(_filePath)}' est illisible. Il n'a pas été remplacé.",
+                    ex);
             }
         }
     }
@@ -65,11 +65,12 @@ public class JsonDataStore : IDataStore
         {
             try
             {
-                return JsonSerializer.Deserialize<List<T>>(json) ?? new List<T>();
+                return JsonSerializer.Deserialize<List<T>>(json)
+                    ?? throw new InvalidDataException($"La collection {typeof(T).Name} est vide ou invalide.");
             }
-            catch
+            catch (Exception ex) when (ex is not InvalidDataException)
             {
-                return new List<T>();
+                throw new InvalidDataException($"La collection {typeof(T).Name} est illisible.", ex);
             }
         }
         return new List<T>();
@@ -87,6 +88,7 @@ public class JsonDataStore : IDataStore
     {
         lock (_lock)
         {
+            var tempPath = _filePath + ".tmp";
             try
             {
                 var dir = Path.GetDirectoryName(_filePath);
@@ -97,11 +99,22 @@ public class JsonDataStore : IDataStore
 
                 var fullDict = new Dictionary<string, string>(_store);
                 var json = JsonSerializer.Serialize(fullDict, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(_filePath, json);
+                File.WriteAllText(tempPath, json);
+                File.Move(tempPath, _filePath, true);
             }
-            catch
+            catch (Exception ex)
             {
-                // Silently handle if file writing is temporarily locked
+                try
+                {
+                    if (File.Exists(tempPath))
+                        File.Delete(tempPath);
+                }
+                catch
+                {
+                    // Preserve the original persistence error.
+                }
+
+                throw new IOException("Impossible d'enregistrer les données locales.", ex);
             }
         }
     }

@@ -6,112 +6,20 @@ namespace Gestion_Universite;
 public partial class FormCours : Form
 {
     private readonly CoursDAO _coursDao = new();
-    private TextBox _txtCode = null!;
-    private TextBox _txtIntitule = null!;
-    private TextBox _txtDescription = null!;
-    private TextBox _txtVolume = null!;
-    private DataGridView _dgvCours = null!;
+
     private int _editingId = 0;
 
     public FormCours()
     {
-        InitializeCustomComponents();
-        LoadData();
+        InitializeComponent();
+        Load += (_, _) =>
+        {
+            if (System.ComponentModel.LicenseManager.UsageMode != System.ComponentModel.LicenseUsageMode.Designtime)
+                LoadData();
+        };
     }
 
-    private void InitializeCustomComponents()
-    {
-        Text = "Cours";
-        Size = new Size(1000, 560);
-        MinimumSize = new Size(800, 480);
-        AutoScroll = false;
-        StartPosition = FormStartPosition.CenterScreen;
-        BackColor = UITheme.AppBg;
-        FormBorderStyle = FormBorderStyle.None;
 
-        var titleBar = UITheme.CreateTitleBar(this, "9. Cours & Matières", "📚");
-
-        var mainPanel = new TableLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            ColumnCount = 2,
-            RowCount = 1,
-            Padding = new Padding(16),
-            BackColor = Color.Transparent
-        };
-        mainPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45F));
-        mainPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 55F));
-
-        // LEFT CARD: Saisie / Modification
-        var cardForm = UITheme.CreateCard("Cours", "📚");
-        cardForm.Dock = DockStyle.Fill;
-
-        var pnlForm = new TableLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            ColumnCount = 2,
-            RowCount = 5,
-            Padding = new Padding(8)
-        };
-        pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 110));
-        pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-        for (int i = 0; i < 4; i++)
-            pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
-        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
-
-        pnlForm.Controls.Add(new Label { Text = "Code :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
-        _txtCode = new TextBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
-        pnlForm.Controls.Add(_txtCode, 1, 0);
-
-        pnlForm.Controls.Add(new Label { Text = "Intitulé :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 1);
-        _txtIntitule = new TextBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
-        pnlForm.Controls.Add(_txtIntitule, 1, 1);
-
-        pnlForm.Controls.Add(new Label { Text = "Description :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 2);
-        _txtDescription = new TextBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
-        pnlForm.Controls.Add(_txtDescription, 1, 2);
-
-        pnlForm.Controls.Add(new Label { Text = "Volume horaire :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 3);
-        _txtVolume = new TextBox { Font = UITheme.FontRegular(10), Text = "45 h", Dock = DockStyle.Fill };
-        pnlForm.Controls.Add(_txtVolume, 1, 3);
-
-        var pnlBtns = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.LeftToRight };
-        var btnSave = UITheme.CreatePrimaryButton("Enregistrer");
-        btnSave.Click += BtnSave_Click;
-        var btnReset = UITheme.CreateSecondaryButton("Réinitialiser");
-        btnReset.Click += (s, e) => ResetForm();
-        pnlBtns.Controls.Add(btnSave);
-        pnlBtns.Controls.Add(btnReset);
-        pnlForm.Controls.Add(pnlBtns, 1, 4);
-
-        cardForm.Controls.Add(pnlForm);
-        mainPanel.Controls.Add(cardForm, 0, 0);
-
-        // RIGHT CARD: Liste des cours
-        var cardList = UITheme.CreateCard("Liste des cours", "📋");
-        cardList.Dock = DockStyle.Fill;
-
-        _dgvCours = new DataGridView { Dock = DockStyle.Fill };
-        UITheme.StyleDataGridView(_dgvCours);
-
-        _dgvCours.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColId", HeaderText = "ID", Visible = false });
-        _dgvCours.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColCode", HeaderText = "Code", FillWeight = 90, MinimumWidth = 70 });
-        _dgvCours.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColIntitule", HeaderText = "Intitulé", FillWeight = 160, MinimumWidth = 100 });
-        _dgvCours.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColVH", HeaderText = "VH", FillWeight = 60, MinimumWidth = 50 });
-
-        var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Action", Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 35 };
-        var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 35 };
-        _dgvCours.Columns.AddRange(colEdit, colDelete);
-        _dgvCours.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-        _dgvCours.CellContentClick += DgvCours_CellContentClick;
-
-        cardList.Controls.Add(_dgvCours);
-        mainPanel.Controls.Add(cardList, 1, 0);
-
-        Controls.Add(mainPanel);
-        Controls.Add(titleBar);
-    }
 
     private void LoadData()
     {

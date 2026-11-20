@@ -10,89 +10,38 @@ public partial class FormClasseDetail : Form
     private readonly NiveauDAO _niveauDao = new();
     private readonly AnneeAcademiqueDAO _anneeDao = new();
 
-    private ComboBox _cboFiliere = null!;
-    private ComboBox _cboNiveau = null!;
-    private ComboBox _cboAnnee = null!;
-    private ComboBox _cboGroupe = null!;
     private int _classeId = 0;
 
     public event EventHandler? DataSaved;
 
-    public FormClasseDetail(int classeId = 0)
+    public FormClasseDetail() : this(0) { }
+
+    public FormClasseDetail(int classeId)
     {
         _classeId = classeId;
-        InitializeCustomComponents();
-        LoadLookups();
-        if (_classeId > 0)
-            LoadClasseData();
-    }
-
-    private void InitializeCustomComponents()
-    {
-        Text = _classeId == 0 ? "Ajouter une classe" : "Modifier une classe";
-        Size = new Size(520, 420);
-        StartPosition = FormStartPosition.CenterParent;
-        BackColor = UITheme.AppBg;
-        FormBorderStyle = FormBorderStyle.None;
-        AutoScroll = true;
-
-        var titleBar = UITheme.CreateTitleBar(this, _classeId == 0 ? "5. Classes - Nouvelle Classe" : "5. Classes - Modification", "👥", isDialog: true);
-
-        var card = UITheme.CreateCard("Informations de la classe", "👥");
-        card.Dock = DockStyle.Fill;
-        card.Padding = new Padding(16);
-
-        var pnlForm = new TableLayoutPanel
+        InitializeComponent();
+        Text = _classeId == 0 ? "Nouvelle classe" : "Modifier la classe";
+        lblTitle.Text = Text;
+        Load += (_, _) =>
         {
-            Dock = DockStyle.Fill,
-            ColumnCount = 2,
-            RowCount = 5,
-            Padding = new Padding(8)
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
+            LoadLookups();
+            if (_classeId > 0) LoadClasseData();
         };
-        pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 95));
-        pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
-        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
-        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
-        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
-        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
-
-        pnlForm.Controls.Add(new Label { Text = "Filière :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
-        _cboFiliere = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
-        pnlForm.Controls.Add(_cboFiliere, 1, 0);
-
-        pnlForm.Controls.Add(new Label { Text = "Niveau :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 1);
-        _cboNiveau = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
-        pnlForm.Controls.Add(_cboNiveau, 1, 1);
-
-        pnlForm.Controls.Add(new Label { Text = "Année :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 2);
-        _cboAnnee = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
-        pnlForm.Controls.Add(_cboAnnee, 1, 2);
-
-        pnlForm.Controls.Add(new Label { Text = "Groupe :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 3);
-        _cboGroupe = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
-        _cboGroupe.Items.AddRange(new object[] { "A", "B", "C", "D" });
-        _cboGroupe.SelectedIndex = 0;
-        pnlForm.Controls.Add(_cboGroupe, 1, 3);
-
-        var pnlBtns = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.LeftToRight };
-        var btnSave = UITheme.CreatePrimaryButton("Enregistrer");
-        btnSave.Click += BtnSave_Click;
-        var btnCancel = UITheme.CreateSecondaryButton("Annuler");
-        btnCancel.Click += (s, e) => Close();
-        pnlBtns.Controls.Add(btnSave);
-        pnlBtns.Controls.Add(btnCancel);
-        pnlForm.Controls.Add(pnlBtns, 1, 4);
-
-        card.Controls.Add(pnlForm);
-        Controls.Add(card);
-        Controls.Add(titleBar);
     }
+
+    private void BtnCancel_Click(object? sender, EventArgs e) => Close();
 
     private void LoadLookups()
     {
+        _cboFiliere.DisplayMember = nameof(Filiere.Nom);
+        _cboFiliere.ValueMember = nameof(Filiere.Id);
         _cboFiliere.DataSource = _filiereDao.GetAll();
+        _cboNiveau.DisplayMember = nameof(Niveau.Code);
+        _cboNiveau.ValueMember = nameof(Niveau.Id);
         _cboNiveau.DataSource = _niveauDao.GetAll();
+        _cboAnnee.DisplayMember = nameof(AnneeAcademique.Code);
+        _cboAnnee.ValueMember = nameof(AnneeAcademique.Id);
         _cboAnnee.DataSource = _anneeDao.GetAll();
     }
 
@@ -101,17 +50,23 @@ public partial class FormClasseDetail : Form
         var c = _classeDao.GetById(_classeId);
         if (c != null)
         {
-            var filieres = (List<Filiere>)_cboFiliere.DataSource;
-            var f = filieres.FirstOrDefault(x => x.Id == c.FiliereId);
-            if (f != null) _cboFiliere.SelectedItem = f;
+            if (_cboFiliere.DataSource is List<Filiere> filieres)
+            {
+                var f = filieres.FirstOrDefault(x => x.Id == c.FiliereId);
+                if (f != null) _cboFiliere.SelectedItem = f;
+            }
 
-            var niveaux = (List<Niveau>)_cboNiveau.DataSource;
-            var n = niveaux.FirstOrDefault(x => x.Id == c.NiveauId);
-            if (n != null) _cboNiveau.SelectedItem = n;
+            if (_cboNiveau.DataSource is List<Niveau> niveaux)
+            {
+                var n = niveaux.FirstOrDefault(x => x.Id == c.NiveauId);
+                if (n != null) _cboNiveau.SelectedItem = n;
+            }
 
-            var annees = (List<AnneeAcademique>)_cboAnnee.DataSource;
-            var a = annees.FirstOrDefault(x => x.Id == c.AnneeAcademiqueId);
-            if (a != null) _cboAnnee.SelectedItem = a;
+            if (_cboAnnee.DataSource is List<AnneeAcademique> annees)
+            {
+                var a = annees.FirstOrDefault(x => x.Id == c.AnneeAcademiqueId);
+                if (a != null) _cboAnnee.SelectedItem = a;
+            }
 
             _cboGroupe.SelectedItem = c.Groupe;
         }

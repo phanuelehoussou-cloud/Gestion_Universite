@@ -32,9 +32,8 @@ public static class DatabaseConfig
 
     public static string DatabaseFilePath => Path.Combine(DataDirectory, "gestion_universite_db.json");
 
-    // Can be used for SQL Server or MySQL when connected
+    // Override with IIT_SQLSERVER_CONNECTION_STRING when running on another workstation.
     public static string ConnectionString { get; set; } =
-        "Server=(localdb)\\MSSQLLocalDB;Database=IIT_Gestion_Universite;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
-
-    public static bool UseSqlServer { get; set; } = false;
+        Environment.GetEnvironmentVariable("IIT_SQLSERVER_CONNECTION_STRING") ??
+        "Server=YHPC\\SQLEXPRESS03;Database=dbGest_universite;Integrated Security=True;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=True;Application Name=IIT Gestion Universitaire";
 }

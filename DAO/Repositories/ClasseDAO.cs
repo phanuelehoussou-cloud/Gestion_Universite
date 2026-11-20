@@ -9,7 +9,7 @@ public class ClasseDAO
 
     public ClasseDAO(IDataStore? store = null)
     {
-        _store = store ?? JsonDataStore.Instance;
+        _store = store ?? DataStoreProvider.Current;
     }
 
     public List<Classe> GetAll()
@@ -40,7 +40,7 @@ public class ClasseDAO
     public void Add(Classe classe)
     {
         var list = _store.GetCollection<Classe>();
-        classe.Id = list.Count > 0 ? list.Max(x => x.Id) + 1 : 1;
+        classe.Id = IdentityHelper.NextId(_store, list.Select(x => x.Id));
         list.Add(classe);
         _store.SaveCollection(list);
     }

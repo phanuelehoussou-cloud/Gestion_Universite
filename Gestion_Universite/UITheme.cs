@@ -301,10 +301,14 @@ public static class UITheme
                     var badgeRect = new Rectangle(e.CellBounds.X + 8, e.CellBounds.Y + 8, Math.Min(e.CellBounds.Width - 16, 95), e.CellBounds.Height - 16);
                     using var brush = new SolidBrush(bg);
                     using var path = GetRoundedRectangle(badgeRect, 6);
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    e.Graphics.FillPath(brush, path);
+                    var graphics = e.Graphics;
+                    if (graphics is null)
+                        return;
 
-                    TextRenderer.DrawText(e.Graphics, val, FontBold(8.5f), badgeRect, fg, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                    graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    graphics.FillPath(brush, path);
+
+                    TextRenderer.DrawText(graphics, val, FontBold(8.5f), badgeRect, fg, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
                     e.Handled = true;
                 }
             }

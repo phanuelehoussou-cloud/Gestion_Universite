@@ -3,6 +3,7 @@ namespace DAO.Models;
 public class Enseignant
 {
     public int Id { get; set; }
+    public string Matricule { get; set; } = string.Empty;
     public string Nom { get; set; } = string.Empty;
     public string Prenoms { get; set; } = string.Empty;
     public string Specialite { get; set; } = string.Empty; // "Informatique", "Maths", "Physique", etc.
@@ -50,6 +51,7 @@ public class SeanceEmploiDuTemps
     public string Jour { get; set; } = "Lundi"; // "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"
     public string HeureDebut { get; set; } = "08h";
     public string HeureFin { get; set; } = "10h";
+    public DateTime DateSeance { get; set; } = DateTime.Today;
 
     // Navigation properties for display
     public string? ClasseCode { get; set; }
@@ -59,6 +61,7 @@ public class SeanceEmploiDuTemps
     public string? SalleNom { get; set; }
 
     public string Creneau => $"{HeureDebut}-{HeureFin}";
+    public string Libelle => $"{DateSeance:dd/MM/yyyy} · {Jour} {Creneau} · {CoursIntitule} ({SalleNom})";
 
     public override string ToString() => $"{Jour} {Creneau} - {CoursIntitule} ({SalleNom})";
 }

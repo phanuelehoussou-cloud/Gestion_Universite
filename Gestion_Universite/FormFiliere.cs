@@ -6,111 +6,24 @@ namespace Gestion_Universite;
 public partial class FormFiliere : Form
 {
     private readonly FiliereDAO _filiereDao = new();
-    private TextBox _txtNom = null!;
-    private TextBox _txtDescription = null!;
-    private ComboBox _cboStatut = null!;
-    private DataGridView _dgvFilieres = null!;
+
     private int _editingId = 0;
 
     public FormFiliere()
     {
-        InitializeCustomComponents();
+        InitializeComponent();
+        _cboStatut.SelectedIndex = 0;
+        Load += FormFiliere_Load;
+    }
+
+    private void FormFiliere_Load(object? sender, EventArgs e)
+    {
+        if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime) return;
         LoadData();
     }
 
-    private void InitializeCustomComponents()
-    {
-        Text = "Filières";
-        Size = new Size(1000, 560);
-        StartPosition = FormStartPosition.CenterScreen;
-        BackColor = UITheme.AppBg;
-        FormBorderStyle = FormBorderStyle.None;
+    private void BtnReset_Click(object? sender, EventArgs e) => ResetForm();
 
-        AutoScroll = true;
-
-        var titleBar = UITheme.CreateTitleBar(this, "3. Filières", "🎓");
-
-        var mainPanel = new TableLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            ColumnCount = 2,
-            RowCount = 1,
-            Padding = new Padding(12),
-            BackColor = Color.Transparent,
-            AutoScroll = true
-        };
-        mainPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45F));
-        mainPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 55F));
-
-        // LEFT CARD: Saisie / Modification
-        var cardForm = UITheme.CreateCard("Filières", "🎓");
-        cardForm.Dock = DockStyle.Fill;
-
-        var pnlForm = new TableLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            ColumnCount = 2,
-            RowCount = 5,
-            Padding = new Padding(6)
-        };
-        pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 115));
-        pnlForm.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
-        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 100));
-        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
-        pnlForm.RowStyles.Add(new RowStyle(SizeType.Absolute, 48));
-        pnlForm.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-
-        pnlForm.Controls.Add(new Label { Text = "Nom de la filière :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
-        _txtNom = new TextBox { Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
-        pnlForm.Controls.Add(_txtNom, 1, 0);
-
-        pnlForm.Controls.Add(new Label { Text = "Description :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Top | AnchorStyles.Left }, 0, 1);
-        _txtDescription = new TextBox { Font = UITheme.FontRegular(10), Multiline = true, Height = 90, Dock = DockStyle.Fill, ScrollBars = ScrollBars.Vertical };
-        pnlForm.Controls.Add(_txtDescription, 1, 1);
-
-        pnlForm.Controls.Add(new Label { Text = "Statut :", Font = UITheme.FontSemiBold(), AutoSize = true, Anchor = AnchorStyles.Left }, 0, 2);
-        _cboStatut = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Font = UITheme.FontRegular(10), Dock = DockStyle.Fill };
-        _cboStatut.Items.AddRange(new object[] { "Active", "Inactive" });
-        _cboStatut.SelectedIndex = 0;
-        pnlForm.Controls.Add(_cboStatut, 1, 2);
-
-        var pnlBtns = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.LeftToRight };
-        var btnSave = UITheme.CreatePrimaryButton("Enregistrer");
-        btnSave.Click += BtnSave_Click;
-        var btnReset = UITheme.CreateSecondaryButton("Réinitialiser");
-        btnReset.Click += (s, e) => ResetForm();
-        pnlBtns.Controls.Add(btnSave);
-        pnlBtns.Controls.Add(btnReset);
-        pnlForm.Controls.Add(pnlBtns, 1, 3);
-
-        cardForm.Controls.Add(pnlForm);
-        mainPanel.Controls.Add(cardForm, 0, 0);
-
-        // RIGHT CARD: Liste des filières
-        var cardList = UITheme.CreateCard("Liste des filières", "📋");
-        cardList.Dock = DockStyle.Fill;
-
-        _dgvFilieres = new DataGridView { Dock = DockStyle.Fill };
-        UITheme.StyleDataGridView(_dgvFilieres);
-
-        _dgvFilieres.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColId", HeaderText = "ID", Visible = false });
-        _dgvFilieres.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColNom", HeaderText = "Filière", FillWeight = 160, MinimumWidth = 120 });
-        _dgvFilieres.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColStatut", HeaderText = "Statut", FillWeight = 80, MinimumWidth = 80 });
-
-        var colEdit = new DataGridViewButtonColumn { Name = "ColEdit", HeaderText = "Action", Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 40, MinimumWidth = 45 };
-        var colDelete = new DataGridViewButtonColumn { Name = "ColDelete", HeaderText = "", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 40, MinimumWidth = 45 };
-        _dgvFilieres.Columns.AddRange(colEdit, colDelete);
-        _dgvFilieres.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-        _dgvFilieres.CellContentClick += DgvFilieres_CellContentClick;
-
-        cardList.Controls.Add(_dgvFilieres);
-        mainPanel.Controls.Add(cardList, 1, 0);
-
-        Controls.Add(mainPanel);
-        Controls.Add(titleBar);
-    }
 
     private void LoadData()
     {
